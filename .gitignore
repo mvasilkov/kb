@@ -37,11 +37,6 @@ coverage.xml
 # Translations
 *.mo
 
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-
 # Rope
 .ropeproject
 
@@ -52,3 +47,5 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# OS X cruft
+.DS_Store
