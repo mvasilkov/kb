@@ -18,7 +18,7 @@ class ClockApp(App):
         if self.sw_started:
             self.sw_seconds += nap
 
-        self.root.ids.time.text = strftime('[b]%I[/b]:%M:%S')
+        self.root.ids.time.text = strftime('[b]%H[/b]:%M:%S')
 
         m, s = divmod(self.sw_seconds, 60)
         self.root.ids.stopwatch.text = ('%02d:%02d.[size=40]%02d[/size]' %
