@@ -36,7 +36,7 @@ class ClockApp(App):
         self.sw_seconds = 0
 
 if __name__ == '__main__':
-    Window.clearcolor = get_color_from_hex('#2a2430')
+    Window.clearcolor = get_color_from_hex('#101216')
     LabelBase.register(name='Roboto',
                        fn_regular='Roboto-Thin.ttf',
                        fn_bold='Roboto-Medium.ttf')
