@@ -42,6 +42,13 @@ class CanvasWidget(Widget):
             Color(*get_color_from_hex('#0080ff80'))
             Line(circle=(touch.x, touch.y, 25), width=4)
 
+    def clear_canvas(self):
+        saved = self.children[:]
+        self.clear_widgets()
+        self.canvas.clear()
+        for widget in saved:
+            self.add_widget(widget)
+
 
 class PaintApp(App):
     def build(self):
