@@ -2,6 +2,8 @@ from kivy.app import App
 from kivy.base import EventLoop
 from kivy.config import Config
 from kivy.graphics import Color, Line
+from kivy.uix.behaviors import ToggleButtonBehavior
+from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 
@@ -39,8 +41,16 @@ class CanvasWidget(Widget):
             return
 
         with self.canvas:
-            Color(*get_color_from_hex('#0080ff80'))
-            Line(circle=(touch.x, touch.y, 25), width=4)
+            touch.ud['current_line'] = Line(
+                points=(touch.x, touch.y), width=2)
+
+    def on_touch_move(self, touch):
+        if 'current_line' in touch.ud:
+            touch.ud['current_line'].points += (touch.x, touch.y)
+
+    def set_color(self, new_color):
+        self.last_color = new_color
+        self.canvas.add(Color(*new_color))
 
     def clear_canvas(self):
         saved = self.children[:]
@@ -48,6 +58,7 @@ class CanvasWidget(Widget):
         self.canvas.clear()
         for widget in saved:
             self.add_widget(widget)
+        self.set_color(self.last_color)
 
 
 class PaintApp(App):
@@ -62,7 +73,15 @@ class PaintApp(App):
             except:
                 pass
 
-        return CanvasWidget()
+        self.canvas_widget = CanvasWidget()
+        self.canvas_widget.set_color(get_color_from_hex('#2980b9'))
+        return self.canvas_widget
+
+
+class RadioButton(ToggleButton):
+    def _do_press(self):
+        if self.state == 'normal':
+            ToggleButtonBehavior._do_press(self)
 
 
 def pygame_compile_cursor(black='@', white='-'):

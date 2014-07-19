@@ -1,3 +1,12 @@
+#:import C kivy.utils.get_color_from_hex
+
+<ColorButton@RadioButton>:
+    group: 'color'
+    on_release: app.canvas_widget.set_color(self.background_color)
+    background_normal: 'color_button_normal.png'
+    background_down: 'color_button_down.png'
+    border: (3, 3, 3, 3)
+
 <CanvasWidget>:
     Button:
         text: 'Delete'
@@ -10,3 +19,73 @@
         top: root.top
         width: 80
         height: 40
+
+    BoxLayout:
+        orientation: 'horizontal'
+        padding: 2
+        spacing: 2
+        x: 0
+        y: 0
+        width: root.width
+        height: 40
+
+        ColorButton:
+            background_color: C('#2980b9')
+            state: 'down'
+
+        ColorButton:
+            background_color: C('#16a085')
+
+        ColorButton:
+            background_color: C('#27ae60')
+
+        ColorButton:
+            background_color: C('#f39c12')
+
+        ColorButton:
+            background_color: C('#d35400')
+
+        ColorButton:
+            background_color: C('#c0392b')
+
+        ColorButton:
+            background_color: C('#8e44ad')
+
+        ColorButton:
+            background_color: C('#bdc3c7')
+
+        ColorButton:
+            background_color: C('#7f8c8d')
+
+        ColorButton:
+            background_color: C('#2c3e50')
+
+        ColorButton:
+            background_color: C('#3498db')
+
+        ColorButton:
+            background_color: C('#1abc9c')
+
+        ColorButton:
+            background_color: C('#2ecc71')
+
+        ColorButton:
+            background_color: C('#f1c40f')
+
+        ColorButton:
+            background_color: C('#e67e22')
+
+        ColorButton:
+            background_color: C('#e74c3c')
+
+        ColorButton:
+            background_color: C('#9b59b6')
+
+        ColorButton:
+            background_color: C('#ecf0f1')
+
+        ColorButton:
+            background_color: C('#95a5a6')
+
+        ColorButton:
+            background_color: C('#34495e')
