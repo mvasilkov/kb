@@ -1,11 +1,19 @@
 #:import C kivy.utils.get_color_from_hex
 
-<ColorButton@RadioButton>:
-    group: 'color'
-    on_release: app.canvas_widget.set_color(self.background_color)
+<RadioButton>
     background_normal: 'color_button_normal.png'
     background_down: 'color_button_down.png'
     border: (3, 3, 3, 3)
+
+<ColorButton@RadioButton>:
+    group: 'color'
+    on_release: app.canvas_widget.set_color(self.background_color)
+
+<LineWidthButton@RadioButton>:
+    group: 'line_width'
+    on_release: app.canvas_widget.set_line_width(self.text)
+    color: C('#2c3e50')
+    background_color: C('#ecf0f1')
 
 <CanvasWidget>:
     Button:
@@ -19,6 +27,25 @@
         top: root.top
         width: 80
         height: 40
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 2
+        spacing: 2
+        x: 0
+        top: root.top
+        width: 80
+        height: 110
+
+        LineWidthButton:
+            text: 'Thin'
+
+        LineWidthButton:
+            text: 'Normal'
+            state: 'down'
+
+        LineWidthButton:
+            text: 'Thick'
 
     BoxLayout:
         orientation: 'horizontal'
