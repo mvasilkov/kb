@@ -1,0 +1,44 @@
+#:import C kivy.utils.get_color_from_hex
+
+<GridLayout>:
+    cols: 2
+    spacing: 10
+    row_default_height: (self.width - self.spacing[0]) / 2 - self.padding[0]
+    row_force_default: True
+
+<Button>:
+    background_normal: 'button_normal.png'
+    background_down: 'button_down.png'
+    font_size: 40
+
+GridLayout:
+    padding: 15
+
+    Button:
+        background_color: C('#3498db')
+        text: 'aaa'
+
+    GridLayout:
+        Button:
+            background_color: C('#2ecc71')
+            text: 'bbb1'
+
+        Button:
+            background_color: C('#1abc9c')
+            text: 'bbb2'
+
+        Button:
+            background_color: C('#27ae60')
+            text: 'bbb3'
+
+        Button:
+            background_color: C('#16a085')
+            text: 'bbb4'
+
+    Button:
+        background_color: C('#e74c3c')
+        text: 'ccc'
+
+    Button:
+        background_color: C('#95a5a6')
+        text: 'ddd'
