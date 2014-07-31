@@ -1,0 +1,3 @@
+title=Paint app
+author=Mark Vasilkov
+orientation=landscape
