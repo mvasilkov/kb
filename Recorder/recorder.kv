@@ -19,10 +19,12 @@ GridLayout:
     padding: 15
 
     Button:
+        id: begin_end_recording
         background_color: C('#3498db')
         text:
             ('[font=Modern Pictograms][size=120]'
-            'e[/size][/font]\nNew recording')
+            'e[/size][/font]\nBegin recording')
+        on_press: app.begin_end_recording()
 
     GridLayout:
         Button:
