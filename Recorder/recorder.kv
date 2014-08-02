@@ -46,7 +46,9 @@ GridLayout:
     Button:
         background_color: C('#95a5a6')
         text: '[font=Modern Pictograms][size=120]P[/size][/font]\nPlayback'
+        on_press: app.begin_playback()
 
     Button:
         background_color: C('#e74c3c')
         text: '[font=Modern Pictograms][size=120]X[/size][/font]\nDelete'
+        on_press: app.delete_file()

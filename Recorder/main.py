@@ -9,15 +9,37 @@ MediaRecorder = autoclass('android.media.MediaRecorder')
 AudioSource = autoclass('android.media.MediaRecorder$AudioSource')
 OutputFormat = autoclass('android.media.MediaRecorder$OutputFormat')
 AudioEncoder = autoclass('android.media.MediaRecorder$AudioEncoder')
+MediaPlayer = autoclass('android.media.MediaPlayer')
+File = autoclass('java.io.File')
 
 storage_path = Environment.getExternalStorageDirectory().getAbsolutePath()
 
 recorder = MediaRecorder()
-recorder.setAudioSource(AudioSource.MIC)
-recorder.setOutputFormat(OutputFormat.THREE_GPP)
-recorder.setAudioEncoder(AudioEncoder.AMR_NB)
-recorder.setOutputFile(storage_path + '/kivy_recording.3gp')
-recorder.prepare()
+player = MediaPlayer()
+
+
+def init_recorder():
+    recorder.setAudioSource(AudioSource.MIC)
+    recorder.setOutputFormat(OutputFormat.THREE_GPP)
+    recorder.setAudioEncoder(AudioEncoder.AMR_NB)
+    recorder.setOutputFile(storage_path + '/kivy_recording.3gp')
+    recorder.prepare()
+
+
+def reset_player():
+    if (player.isPlaying()):
+        player.stop()
+    player.reset()
+
+
+def restart_player():
+    reset_player()
+    try:
+        player.setDataSource(storage_path + '/kivy_recording.3gp')
+        player.prepare()
+        player.start()
+    except:
+        player.reset()
 
 
 class RecorderApp(App):
@@ -26,17 +48,27 @@ class RecorderApp(App):
     def begin_end_recording(self):
         if (self.is_recording):
             recorder.stop()
+            recorder.reset()
             self.is_recording = False
             self.root.ids.begin_end_recording.text = \
                 ('[font=Modern Pictograms][size=120]'
                  'e[/size][/font]\nBegin recording')
             return
 
+        init_recorder()
         recorder.start()
         self.is_recording = True
         self.root.ids.begin_end_recording.text = \
             ('[font=Modern Pictograms][size=120]'
              'X[/size][/font]\nEnd recording')
+
+    def begin_playback(self):
+        restart_player()
+
+    def delete_file(self):
+        reset_player()
+        File(storage_path + '/kivy_recording.3gp').delete()
+
 
 if __name__ == '__main__':
     Logger.info('App: storage path == "%s"' % storage_path)
