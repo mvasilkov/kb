@@ -12,7 +12,8 @@ AudioEncoder = autoclass('android.media.MediaRecorder$AudioEncoder')
 MediaPlayer = autoclass('android.media.MediaPlayer')
 File = autoclass('java.io.File')
 
-storage_path = Environment.getExternalStorageDirectory().getAbsolutePath()
+storage_path = (Environment.getExternalStorageDirectory()
+                .getAbsolutePath() + '/kivy_recording.3gp')
 
 recorder = MediaRecorder()
 player = MediaPlayer()
@@ -22,7 +23,7 @@ def init_recorder():
     recorder.setAudioSource(AudioSource.MIC)
     recorder.setOutputFormat(OutputFormat.THREE_GPP)
     recorder.setAudioEncoder(AudioEncoder.AMR_NB)
-    recorder.setOutputFile(storage_path + '/kivy_recording.3gp')
+    recorder.setOutputFile(storage_path)
     recorder.prepare()
 
 
@@ -35,7 +36,7 @@ def reset_player():
 def restart_player():
     reset_player()
     try:
-        player.setDataSource(storage_path + '/kivy_recording.3gp')
+        player.setDataSource(storage_path)
         player.prepare()
         player.start()
     except:
@@ -60,14 +61,14 @@ class RecorderApp(App):
         self.is_recording = True
         self.root.ids.begin_end_recording.text = \
             ('[font=Modern Pictograms][size=120]'
-             'X[/size][/font]\nEnd recording')
+             '%[/size][/font]\nEnd recording')
 
     def begin_playback(self):
         restart_player()
 
     def delete_file(self):
         reset_player()
-        File(storage_path + '/kivy_recording.3gp').delete()
+        File(storage_path).delete()
 
 
 if __name__ == '__main__':
