@@ -1,0 +1,54 @@
+#:import C kivy.utils.get_color_from_hex
+#:import RiseInTransition kivy.uix.screenmanager.RiseInTransition
+
+<BoxLayout>:
+    padding: 10
+
+<GridLayout>:
+    cols: 2
+    spacing: 10
+    row_default_height: 90
+    row_force_default: True
+
+<Button,Label,TextInput>:
+    font_size: 24
+
+ScreenManager:
+    transition: RiseInTransition()
+
+    Screen:
+        name: 'login'
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            GridLayout:
+                Label:
+                    text: 'Server:'
+
+                TextInput:
+                    multiline: False
+
+                Label:
+                    text: 'Username:'
+
+                TextInput:
+                    multiline: False
+
+            Button:
+                height: 90
+                size_hint: (1, None)
+                text: 'Connect'
+                on_press: root.current = 'chatroom'
+
+    Screen:
+        name: 'chatroom'
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            Button:
+                height: 90
+                size_hint: (1, None)
+                text: 'Disconnect'
+                on_press: root.current = 'login'
