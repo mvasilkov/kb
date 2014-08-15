@@ -3,15 +3,44 @@
 
 <BoxLayout>:
     padding: 10
+    spacing: 10
 
 <GridLayout>:
+    rows: 2
     cols: 2
     spacing: 10
     row_default_height: 90
     row_force_default: True
 
-<Button,Label,TextInput>:
-    font_size: 24
+<Button>:
+    font_size: 30
+    height: 90
+    size_hint: (1, None)
+    background_normal: 'button_normal.png'
+    background_down: 'button_down.png'
+    border: (2, 2, 2, 2)
+
+<Label>:
+    font_size: 30
+
+<TextInput>:
+    font_size: 30
+    multiline: False
+    padding: [10, 0.5 * (self.height - self.line_height)]
+
+<ChatLabel@Label>:
+    canvas.before:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    color: C('#101010')
+    text_size: self.size
+    halign: 'left'
+    valign: 'top'
+    padding: (-10, -10)  # fixed in Kivy 1.8.1
+
 
 ScreenManager:
     transition: RiseInTransition()
@@ -27,17 +56,17 @@ ScreenManager:
                     text: 'Server:'
 
                 TextInput:
-                    multiline: False
+                    id: server
+                    text: '127.0.0.1'
 
                 Label:
-                    text: 'Username:'
+                    text: 'Nickname:'
 
                 TextInput:
-                    multiline: False
+                    id: nickname
+                    text: 'Kivy'
 
             Button:
-                height: 90
-                size_hint: (1, None)
                 text: 'Connect'
                 on_press: root.current = 'chatroom'
 
@@ -48,7 +77,23 @@ ScreenManager:
             orientation: 'vertical'
 
             Button:
-                height: 90
-                size_hint: (1, None)
                 text: 'Disconnect'
                 on_press: root.current = 'login'
+                background_normal: 'red_button_normal.png'
+                background_down: 'red_button_down.png'
+
+            ChatLabel:
+                text: 'User says: foo\nUser says: bar'
+
+            BoxLayout:
+                height: 90
+                orientation: 'horizontal'
+                padding: 0
+                size_hint: (1, None)
+
+                TextInput:
+                    id: message
+
+                Button:
+                    text: 'Send'
+                    size_hint: (0.3, 1)
