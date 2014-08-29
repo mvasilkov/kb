@@ -1,3 +1,5 @@
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+
 <BoxLayout>:
     height: 90
     size_hint: (1, None)
@@ -35,4 +37,18 @@ ScreenManager:
 
             Button:
                 text: 'Connect'
+                on_press: app.connect()
                 size_hint: (0.4, 1)
+
+    Screen:
+        name: 'desktop'
+
+        ScrollView:
+            effect_cls: ScrollEffect
+
+            Image:
+                id: desktop
+                nocache: True
+                on_touch_down: app.send_click(args[1])
+                size: self.texture_size
+                size_hint: (None, None)
