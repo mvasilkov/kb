@@ -1,0 +1,38 @@
+<BoxLayout>:
+    height: 90
+    size_hint: (1, None)
+    padding: 10
+    spacing: 10
+
+<Label>:
+    font_size: 25
+
+<Button>:
+    background_normal: 'button_normal.png'
+    background_down: 'button_down.png'
+    border: (2, 2, 2, 2)
+
+<TextInput>:
+    font_size: 30
+    multiline: False
+    padding: [10, 0.5 * (self.height - self.line_height)]
+
+ScreenManager:
+    Screen:
+        name: 'login'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            y: root.height - self.height
+
+            Label:
+                text: 'Server:'
+                size_hint: (0.4, 1)
+
+            TextInput:
+                id: server
+                text: '10.211.55.5'
+
+            Button:
+                text: 'Connect'
+                size_hint: (0.4, 1)

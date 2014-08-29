@@ -14,7 +14,8 @@
         <script>
             function reload_desktop() {
                 $('img').remove()
-                $('<img>', {src: '/desktop.jpeg?' + Date.now()}).appendTo('body')
+                $('<img>', {src: '/desktop.jpeg?' +
+                            Date.now()}).appendTo('body')
             }
 
             setInterval(reload_desktop, 2000)
