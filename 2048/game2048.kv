@@ -1,0 +1,25 @@
+#:import C kivy.utils.get_color_from_hex
+#:set PAD 20
+
+FloatLayout:
+    Game2048Board:
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        size_hint: (None, None)
+        center: root.center
+        size: [min(root.width, root.height) - 2 * PAD] * 2
+
+        canvas.before:
+            BorderImage:
+                pos: self.pos
+                size: self.size
+                source: 'board.png'
+                border: [10] * 4
+
+            Color:
+                rgb: C('ccc0b4')
+
+            BorderImage:
+                pos: self.pos
+                size: self.cell_size
+                source: 'cell.png'
+                border: [10] * 4
