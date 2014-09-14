@@ -6,7 +6,7 @@ from kivy.properties import AliasProperty
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 
-SPACING = 10
+SPACING = 15
 
 
 class Game2048Board(Widget):
@@ -14,12 +14,15 @@ class Game2048Board(Widget):
         size = 0.25 * (self.width - 5 * SPACING)
         return (size, size)
 
-    cell_size = AliasProperty(get_cell_size, None, bind=('width', ))
+    def get_cell_pos(self):
+        size = self.get_cell_size()
+        return [[(self.x + SPACING + board_x * (size[0] + SPACING),
+                  self.y + SPACING + board_y * (size[1] + SPACING))
+                 for board_y in range(0, 4)]
+                for board_x in range(0, 4)]
 
-    # def cell_pos(self, board_x, board_y):
-    #     cs = self.cell_size()
-    #     return (board_x * (cs[0] + SPACING) + self.x,
-    #             board_y * (cs[1] + SPACING) + self.y)
+    cell_size = AliasProperty(get_cell_size, None, bind=['width'])
+    cell_pos = AliasProperty(get_cell_pos, None, bind=['cell_size'])
 
 
 class Game2048App(App):

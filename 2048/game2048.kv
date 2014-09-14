@@ -13,13 +13,31 @@ FloatLayout:
                 pos: self.pos
                 size: self.size
                 source: 'board.png'
-                border: [10] * 4
+                border: (10, 10, 10, 10)
 
             Color:
                 rgb: C('ccc0b4')
 
             BorderImage:
-                pos: self.pos
+                pos: self.cell_pos[0][0]
                 size: self.cell_size
                 source: 'cell.png'
-                border: [10] * 4
+                border: (10, 10, 10, 10)
+
+            BorderImage:
+                pos: self.cell_pos[0][1]
+                size: self.cell_size
+                source: 'cell.png'
+                border: (10, 10, 10, 10)
+
+            BorderImage:
+                pos: self.cell_pos[0][2]
+                size: self.cell_size
+                source: 'cell.png'
+                border: (10, 10, 10, 10)
+
+            BorderImage:
+                pos: self.cell_pos[0][3]
+                size: self.cell_size
+                source: 'cell.png'
+                border: (10, 10, 10, 10)
