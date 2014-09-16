@@ -8,10 +8,18 @@ from kivy.utils import get_color_from_hex
 
 spacing = 15
 
+colors = (
+    'eee4da', 'ede0c8', 'f2b179', 'f59563',
+    'f67c5f', 'f65e3b', 'edcf72', 'edcc61',
+    'edc850', 'edc53f', 'edc22e')
+
+tile_colors = {2 ** (i + 1): colors[i]
+               for i in range(len(colors))}
+
 
 def all_cells():
-    for x in range(0, 4):
-        for y in range(0, 4):
+    for x in range(4):
+        for y in range(4):
             yield (x, y)
 
 
