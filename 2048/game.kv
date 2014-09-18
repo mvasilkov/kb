@@ -2,7 +2,26 @@
 
 FloatLayout:
     Board:
+        id: board
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         size_hint: (None, None)
         center: root.center
         size: [min(root.width, root.height) - 2 * padding] * 2
+
+<Tile>:
+    canvas:
+        Color:
+            rgb: self.color
+
+        BorderImage:
+            pos: self.pos
+            size: self.size
+            source: 'cell.png'
+
+    Label:
+        pos: root.pos
+        size: root.size
+        bold: True
+        color: root.number_color
+        font_size: root.font_size
+        text: str(root.number)
