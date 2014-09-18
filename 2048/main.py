@@ -23,9 +23,9 @@ def all_cells():
             yield (x, y)
 
 
-class Game2048Board(Widget):
+class Board(Widget):
     def __init__(self, **kwargs):
-        super(Game2048Board, self).__init__(**kwargs)
+        super(Board, self).__init__(**kwargs)
         self.refresh()
 
     def cell_pos(self, board_x, board_y):
@@ -46,9 +46,9 @@ class Game2048Board(Widget):
     on_size = refresh
 
 
-class Game2048App(App):
+class GameApp(App):
     pass
 
 if __name__ == '__main__':
     Window.clearcolor = get_color_from_hex('faf8ef')
-    Game2048App().run()
+    GameApp().run()
