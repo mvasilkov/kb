@@ -1,12 +1,14 @@
 from __future__ import division
+import random
 
+from kivy.animation import Animation
 from kivy.app import App
-from kivy.clock import Clock
 from kivy.core.window import Window, Keyboard
 from kivy.graphics import Color, BorderImage
 from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
+from kivy.vector import Vector
 
 spacing = 15
 
@@ -36,7 +38,10 @@ class Tile(Widget):
         super(Tile, self).__init__(**kwargs)
         self.font_size = 0.5 * self.width
         self.number = number
-        self.color = get_color_from_hex(tile_colors[number])
+        self.update_colors()
+
+    def update_colors(self):
+        self.color = get_color_from_hex(tile_colors[self.number])
         if self.number > 4:
             self.number_color = get_color_from_hex('f9f6f2')
 
@@ -61,30 +66,64 @@ class Board(Widget):
 
     def reset(self):
         self.b = [[None for i in range(4)] for j in range(4)]
-        Clock.schedule_once(self.new_tile, 0.1)
+        self.new_tile()
+        self.new_tile()
 
     def new_tile(self, *args):
-        tile = Tile(pos=self.cell_pos(1, 1), size=self.cell_size)
-        self.b[1][1] = tile
+        empty_cells = [(x, y) for x, y in all_cells()
+                       if self.b[x][y] is None]
+        x, y = random.choice(empty_cells)
+        tile = Tile(pos=self.cell_pos(x, y), size=self.cell_size)
+        self.b[x][y] = tile
         self.add_widget(tile)
 
     def move(self, dir_x, dir_y):
+        dir_x = int(dir_x)
+        dir_y = int(dir_y)
+        has_on_complete = False
+
         for board_x, board_y in all_cells(dir_x > 0, dir_y > 0):
             tile = self.b[board_x][board_y]
             if not tile:
                 continue
-            new_x, new_y = board_x, board_y
-            while self.can_move(new_x + dir_x, new_y + dir_y):
-                self.b[new_x][new_y] = None
-                new_x += dir_x
-                new_y += dir_y
-                self.b[new_x][new_y] = tile
-                tile.pos = self.cell_pos(new_x, new_y)
+
+            x, y = board_x, board_y
+            while self.can_move(x + dir_x, y + dir_y):
+                self.b[x][y] = None
+                x += dir_x
+                y += dir_y
+                self.b[x][y] = tile
+
+            if self.can_combine(x + dir_x, y + dir_y, tile.number):
+                self.b[x][y] = None
+                x += dir_x
+                y += dir_y
+                self.remove_widget(self.b[x][y])
+                self.b[x][y] = tile
+                tile.number *= 2
+                tile.update_colors()
+
+            if x == board_x and y == board_y:
+                continue  # nothing has happened
+
+            anim = Animation(pos=self.cell_pos(x, y),
+                             duration=0.25, transition='linear')
+            if not has_on_complete:
+                anim.on_complete = self.new_tile
+                has_on_complete = True
+
+            anim.start(tile)
 
     def can_move(self, board_x, board_y):
         return (board_x >= 0 and board_y >= 0 and
                 board_x <= 3 and board_y <= 3 and
                 self.b[board_x][board_y] is None)
+
+    def can_combine(self, board_x, board_y, number):
+        return (board_x >= 0 and board_y >= 0 and
+                board_x <= 3 and board_y <= 3 and
+                self.b[board_x][board_y] is not None and
+                self.b[board_x][board_y].number == number)
 
     def cell_pos(self, board_x, board_y):
         return (self.x + board_x * (self.cell_size[0] + spacing) + spacing,
@@ -117,6 +156,18 @@ class Board(Widget):
     def on_key_down(self, window, key, *args):
         if key in key_vectors:
             self.move(*key_vectors[key])
+
+    def on_touch_up(self, touch):
+        v = Vector(touch.pos) - Vector(touch.opos)
+        if v.length() < 20:
+            return
+
+        if abs(v.x) > abs(v.y):
+            v.y = 0
+        else:
+            v.x = 0
+
+        self.move(*v.normalize())
 
 
 class GameApp(App):
