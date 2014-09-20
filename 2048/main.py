@@ -72,6 +72,10 @@ class Board(Widget):
     def new_tile(self, *args):
         empty_cells = [(x, y) for x, y in all_cells()
                        if self.b[x][y] is None]
+        if not empty_cells:
+            print('Game over')  # TODO
+            return
+
         x, y = random.choice(empty_cells)
         tile = Tile(pos=self.cell_pos(x, y), size=self.cell_size)
         self.b[x][y] = tile
@@ -101,6 +105,9 @@ class Board(Widget):
                 self.remove_widget(self.b[x][y])
                 self.b[x][y] = tile
                 tile.number *= 2
+                if (tile.number == 2048):
+                    print('You win the game')  # TODO
+
                 tile.update_colors()
 
             if x == board_x and y == board_y:
