@@ -5,3 +5,7 @@ FloatLayout:
                 pos: self.pos
                 size: (self.width, 96)
                 texture: self.floor
+            Rectangle:
+                pos: (self.pos[0], self.pos[1] + 96)
+                size: (self.width, 64)
+                texture: self.green
