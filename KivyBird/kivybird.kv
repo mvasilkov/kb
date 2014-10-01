@@ -4,8 +4,12 @@ FloatLayout:
             Rectangle:
                 pos: self.pos
                 size: (self.width, 96)
-                texture: self.floor
+                texture: self.tx_floor
             Rectangle:
                 pos: (self.pos[0], self.pos[1] + 96)
                 size: (self.width, 64)
-                texture: self.green
+                texture: self.tx_green
+            Rectangle:
+                pos: (self.pos[0], self.height - 144)
+                size: (self.width, 128)
+                texture: self.tx_cloud
