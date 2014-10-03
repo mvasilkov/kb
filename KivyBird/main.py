@@ -8,6 +8,7 @@ from kivy.core.window import Window
 from kivy.properties import (ListProperty,
                              NumericProperty,
                              ObjectProperty)
+from kivy.uix.image import Image as ImageWidget
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 
@@ -85,6 +86,11 @@ class Pipe(BaseWidget):
         self.upper_y = self.height - self.upper_len
 
 
+class Bird(ImageWidget):
+    def __init__(self, **kwargs):
+        super(Bird, self).__init__(**kwargs)
+
+
 class KivyBirdApp(App):
     pipes = []
 
@@ -93,6 +99,7 @@ class KivyBirdApp(App):
         self.spawn_pipes()
 
         self.background = self.root.ids.background
+        self.bird = self.root.ids.bird
         Clock.schedule_interval(self.update, 0.016)
 
     def spawn_pipes(self):
@@ -111,10 +118,9 @@ class KivyBirdApp(App):
         self.background.update(nap)
         for p in self.pipes:
             p.x -= 96 * nap
-            if p.x <= -64:  # gone off screen
+            if p.x <= -64:  # pipe gone off screen
                 p.x += 4 * self.spacing
                 p.ratio = random.uniform(0.25, 0.75)
-
 
 if __name__ == '__main__':
     Window.clearcolor = get_color_from_hex('00bfff')
