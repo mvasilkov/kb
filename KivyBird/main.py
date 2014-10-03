@@ -4,8 +4,9 @@ import random
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.image import Image
-from kivy.core.window import Window
-from kivy.properties import (ListProperty,
+from kivy.core.window import Window, Keyboard
+from kivy.properties import (AliasProperty,
+                             ListProperty,
                              NumericProperty,
                              ObjectProperty)
 from kivy.uix.image import Image as ImageWidget
@@ -87,20 +88,45 @@ class Pipe(BaseWidget):
 
 
 class Bird(ImageWidget):
+    ACCEL_JUMP = 5
+    ACCEL_FALL = 0.25
+
+    speed = NumericProperty(0)
+    angle = AliasProperty(
+        lambda self: 5 * self.speed,
+        None,  # no setter
+        bind=['speed'])
+
     def __init__(self, **kwargs):
         super(Bird, self).__init__(**kwargs)
 
+    def gravity_on(self, height):
+        if 'center_y' in self.pos_hint:
+            del self.pos_hint['center_y']
+
+        self.center_y = 0.6 * height
+
+    def bump(self):
+        self.speed = Bird.ACCEL_JUMP
+
+    def update(self, nap):
+        self.speed -= Bird.ACCEL_FALL
+        self.y += self.speed
+
 
 class KivyBirdApp(App):
+    playing = False
     pipes = []
 
     def on_start(self):
         self.spacing = 0.5 * self.root.width
-        self.spawn_pipes()
 
         self.background = self.root.ids.background
         self.bird = self.root.ids.bird
         Clock.schedule_interval(self.update, 0.016)
+
+        Window.bind(on_key_down=self.on_key_down)
+        self.background.on_touch_down = self.user_action
 
     def spawn_pipes(self):
         for p in self.pipes:
@@ -116,11 +142,38 @@ class KivyBirdApp(App):
 
     def update(self, nap):
         self.background.update(nap)
+        if not self.playing:
+            return  # don't move bird or pipes
+
+        self.bird.update(nap)
+
         for p in self.pipes:
             p.x -= 96 * nap
             if p.x <= -64:  # pipe gone off screen
                 p.x += 4 * self.spacing
                 p.ratio = random.uniform(0.25, 0.75)
+
+        if self.test_game_over():
+            self.playing = False
+
+    def on_key_down(self, window, key, *args):
+        if key == Keyboard.keycodes['spacebar']:
+            self.user_action()
+
+    def user_action(self, *args):
+        if not self.playing:
+            self.bird.gravity_on(self.root.height)
+            self.spawn_pipes()
+            self.playing = True
+
+        self.bird.bump()
+
+    def test_game_over(self):
+        if self.bird.y < 90 or \
+                self.bird.y > self.root.height - 50:
+            return True
+
+        return False
 
 if __name__ == '__main__':
     Window.clearcolor = get_color_from_hex('00bfff')

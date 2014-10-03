@@ -1,5 +1,10 @@
+#:import C kivy.utils.get_color_from_hex
+
 <Pipe>:
     canvas:
+        Color:
+            rgb: (1, 1, 1)
+
         Rectangle:
             pos: (self.x + 4, self.FLOOR)
             size: (56, self.lower_len)
@@ -24,6 +29,17 @@
 
     size_hint: (None, 1)
     width: 64
+
+<Bird>:
+    canvas.before:
+        PushMatrix
+        Rotate:
+            angle: root.angle
+            axis: (0, 0, 1)
+            origin: root.center
+
+    canvas.after:
+        PopMatrix
 
 FloatLayout:
     Background:
@@ -50,3 +66,12 @@ FloatLayout:
         size: (54, 54)
         size_hint: (None, None)
         source: 'bird.png'
+
+    Label:
+        color: C('432c1c')
+        font_name: 'FingerPaint-Regular.ttf'
+        font_size: 22
+        text: 'Click, tap or press space'
+        pos_hint: {'center_x': 0.5, 'y': 0}
+        height: 75
+        size_hint: (1, None)
