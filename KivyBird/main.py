@@ -3,6 +3,7 @@ import random
 
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.core.audio import SoundLoader
 from kivy.core.image import Image
 from kivy.core.window import Window, Keyboard
 from kivy.properties import (AliasProperty,
@@ -12,6 +13,21 @@ from kivy.properties import (AliasProperty,
 from kivy.uix.image import Image as ImageWidget
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
+
+
+class MultiAudio:
+    _next = 0
+
+    def __init__(self, filename, count):
+        self.buf = [SoundLoader.load(filename)
+                    for i in range(count)]
+
+    def play(self):
+        self.buf[self._next].play()
+        self._next = (self._next + 1) % len(self.buf)
+
+snd_bump = MultiAudio('bump.wav', 4)
+snd_game_over = SoundLoader.load('game_over.wav')
 
 
 class BaseWidget(Widget):
@@ -132,13 +148,13 @@ class KivyBirdApp(App):
         for p in self.pipes:
             self.root.remove_widget(p)
 
+        self.pipes = []
+
         for i in range(4):
             p = Pipe(x=self.root.width + (self.spacing * i))
             p.ratio = random.uniform(0.25, 0.75)
             self.root.add_widget(p)
             self.pipes.append(p)
-
-        self.root.canvas.ask_update()
 
     def update(self, nap):
         self.background.update(nap)
@@ -154,6 +170,7 @@ class KivyBirdApp(App):
                 p.ratio = random.uniform(0.25, 0.75)
 
         if self.test_game_over():
+            snd_game_over.play()
             self.playing = False
 
     def on_key_down(self, window, key, *args):
@@ -161,6 +178,8 @@ class KivyBirdApp(App):
             self.user_action()
 
     def user_action(self, *args):
+        snd_bump.play()
+
         if not self.playing:
             self.bird.gravity_on(self.root.height)
             self.spawn_pipes()
@@ -169,9 +188,20 @@ class KivyBirdApp(App):
         self.bird.bump()
 
     def test_game_over(self):
+        screen_height = self.root.height
+
         if self.bird.y < 90 or \
-                self.bird.y > self.root.height - 50:
+                self.bird.y > screen_height - 50:
             return True
+
+        for p in self.pipes:
+            if not p.collide_widget(self.bird):
+                continue
+
+            if (self.bird.y < p.lower_len + 116 or
+                self.bird.y > screen_height - (
+                    p.upper_len + 75)):
+                return True
 
         return False
 
