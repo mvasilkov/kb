@@ -81,6 +81,17 @@ class Board(Widget):
         self.b[x][y] = tile
         self.add_widget(tile)
 
+        if len(empty_cells) == 1 and self.is_deadlocked():
+            print('Game over')  # TODO
+
+    def is_deadlocked(self):
+        for x, y in all_cells():
+            number = self.b[x][y]
+            if self.can_combine(x + 1, y, number) or \
+                    self.can_combine(x, y + 1, number):
+                return False
+        return True
+
     def move(self, dir_x, dir_y):
         dir_x = int(dir_x)
         dir_y = int(dir_y)

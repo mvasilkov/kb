@@ -79,7 +79,10 @@ class Pipe(BaseWidget):
     lower_coords = ListProperty((0, 0, 1, 0, 1, 1, 0, 1))
     upper_len = NumericProperty(0)
     upper_coords = ListProperty((0, 0, 1, 0, 1, 1, 0, 1))
-    upper_y = NumericProperty(0)
+
+    upper_y = AliasProperty(
+        lambda self: self.height - self.upper_len,
+        None, bind=['height', 'upper_len'])
 
     def set_coords(self, coords, len):
         len /= 16  # height of texture
@@ -100,7 +103,6 @@ class Pipe(BaseWidget):
         self.upper_len = pipes_length - self.lower_len
         self.set_coords(self.lower_coords, self.lower_len)
         self.set_coords(self.upper_coords, self.upper_len)
-        self.upper_y = self.height - self.upper_len
 
 
 class Bird(ImageWidget):
@@ -110,8 +112,7 @@ class Bird(ImageWidget):
     speed = NumericProperty(0)
     angle = AliasProperty(
         lambda self: 5 * self.speed,
-        None,  # no setter
-        bind=['speed'])
+        None, bind=['speed'])
 
     def __init__(self, **kwargs):
         super(Bird, self).__init__(**kwargs)
