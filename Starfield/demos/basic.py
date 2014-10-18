@@ -1,5 +1,6 @@
 from kivy.app import App
 from kivy.base import EventLoop
+from kivy.config import Config
 from kivy.graphics import Mesh
 from kivy.graphics.instructions import RenderContext
 from kivy.uix.widget import Widget
@@ -9,7 +10,7 @@ class GlslDemo(Widget):
     def __init__(self, **kwargs):
         Widget.__init__(self, **kwargs)
         self.canvas = RenderContext(use_parent_projection=True)
-        self.canvas.shader.source = 'demo.glsl'
+        self.canvas.shader.source = 'basic.glsl'
 
         fmt = (
             ('vPosition', 2, 'float'),
@@ -35,4 +36,6 @@ class GlslApp(App):
         return GlslDemo()
 
 if __name__ == '__main__':
+    Config.set('graphics', 'width', '400')
+    Config.set('graphics', 'height', '300')
     GlslApp().run()
