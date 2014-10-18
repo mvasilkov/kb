@@ -11,7 +11,7 @@ class GlslDemo(Widget):
     def __init__(self, **kwargs):
         Widget.__init__(self, **kwargs)
         self.canvas = RenderContext(use_parent_projection=True)
-        self.canvas.shader.source = 'texture.glsl'
+        self.canvas.shader.source = 'tex_image.glsl'
 
         fmt = (
             ('vPosition', 2, 'float'),
@@ -21,19 +21,16 @@ class GlslDemo(Widget):
         indices = (0, 1, 2, 2, 3, 0)
 
         vertices = (
-            0,   0,   0, 0,
-            255, 0,   1, 0,
-            255, 255, 1, -1,
-            0,   255, 0, -1,
+            0,   0,   0, 1,
+            255, 0,   1, 1,
+            255, 255, 1, 0,
+            0,   255, 0, 0,
         )
-
-        texture = Image('kivy.png').texture
-        texture.wrap = 'repeat'
 
         with self.canvas:
             Mesh(fmt=fmt, mode='triangles',
                  indices=indices, vertices=vertices,
-                 texture=texture)
+                 texture=Image('kivy.png').texture)
 
 
 class GlslApp(App):
