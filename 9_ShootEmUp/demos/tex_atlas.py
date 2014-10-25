@@ -1,4 +1,5 @@
 from __future__ import division
+from collections import namedtuple
 import json
 
 from kivy.app import App
@@ -8,15 +9,11 @@ from kivy.graphics import Mesh
 from kivy.graphics.instructions import RenderContext
 from kivy.uix.widget import Widget
 
-
-class UVMapping:
-    def __init__(self, u0, v0, u1, v1, su, sv):
-        self.u0 = u0
-        self.v0 = v0
-        self.u1 = u1
-        self.v1 = v1
-        self.su = su
-        self.sv = sv
+# u0, v0: top left corner
+# u1, v1: bottom right corner
+# su: equals to 0.5 * width
+# sv: equals to 0.5 * height
+UVMapping = namedtuple('UVMapping', 'u0 v0 u1 v1 su sv')
 
 
 def load_atlas(atlas_name):
@@ -32,8 +29,8 @@ def load_atlas(atlas_name):
         x0, y0, w, h = val
         x1, y1 = x0 + w, y0 + h
         uvmap[name] = UVMapping(
-            x0 / tex_width, 1 - y0 / tex_height,
-            x1 / tex_width, 1 - y1 / tex_height,
+            x0 / tex_width, 1 - y1 / tex_height,
+            x1 / tex_width, 1 - y0 / tex_height,
             0.5 * w, 0.5 * h)
 
     return tex, uvmap
