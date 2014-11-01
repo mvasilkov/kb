@@ -1,6 +1,7 @@
 from __future__ import division
 from collections import namedtuple
 import json
+import math
 from random import randint, random
 
 from kivy.app import App
@@ -14,6 +15,7 @@ Config.set('graphics', 'resizable', '0')
 Config.set('graphics', 'show_cursor', '0')
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 
+from kivy.core.audio import SoundLoader
 from kivy.core.image import Image
 from kivy.core.window import Window
 from kivy.graphics import Mesh
@@ -122,6 +124,21 @@ class PSWidget(Widget):
                  texture=self.texture)
 
 
+class MultiAudio:
+    _next = 0
+
+    def __init__(self, filename, count):
+        self.buf = [SoundLoader.load(filename)
+                    for i in range(count)]
+
+    def play(self):
+        self.buf[self._next].play()
+        self._next = (self._next + 1) % len(self.buf)
+
+snd_hit = MultiAudio('hit.wav', 5)
+snd_laser = MultiAudio('laser.wav', 10)
+
+
 class Star(Particle):
     plane = 1
     tex_name = 'star'
@@ -187,12 +204,66 @@ class Bullet(Particle):
             self.x += 250 * nap
             if self.x > self.parent.width:
                 self.reset()
+
         elif (self.parent.firing and
               self.parent.fire_delay <= 0):
+            snd_laser.play()
+
             self.active = True
             self.x = self.parent.player_x + 40
             self.y = self.parent.player_y
-            self.parent.fire_delay += 0.2
+            self.parent.fire_delay += 0.3333
+
+
+class Enemy(Particle):
+    active = False
+    tex_name = 'ufo'
+    v = 0
+
+    def reset(self, created=False):
+        self.active = False
+        self.x = -100
+        self.y = -100
+        self.v = 0
+
+    def advance(self, nap):
+        if self.active:
+            if self.check_hit():
+                snd_hit.play()
+                return
+
+            self.x -= 200 * nap
+            if self.x < -50:
+                self.reset()
+                return
+
+            self.y += self.v * nap
+            if self.y <= 0:
+                self.v = abs(self.v)
+            elif self.y >= self.parent.height:
+                self.v = -abs(self.v)
+
+        elif self.parent.spawn_delay <= 0:
+            self.active = True
+            self.x = self.parent.width + 50
+            self.y = self.parent.height * random()
+            self.v = randint(-100, 100)
+            self.parent.spawn_delay += 1
+
+    def check_hit(self):
+        if math.hypot(self.parent.player_x - self.x,
+                      self.parent.player_y - self.y) < 60:
+            self.reset()
+            return True
+
+        for b in self.parent.bullets:
+            if not b.active:
+                continue
+
+            if math.hypot(b.x - self.x, b.y - self.y) < 30:
+                b.reset()
+                self.reset()
+                return True
 
 
 class Game(PSWidget):
@@ -201,6 +272,7 @@ class Game(PSWidget):
 
     fire_delay = 0
     firing = False
+    spawn_delay = 1
 
     def initialize(self):
         self.player_x, self.player_y = self.center
@@ -208,13 +280,18 @@ class Game(PSWidget):
         self.make_particles(Star, 200)
         self.make_particles(Trail, 200)
         self.make_particles(Player, 1)
+        self.make_particles(Enemy, 25)
         self.make_particles(Bullet, 25)
+
+        self.bullets = self.particles[-25:]
 
     def update_glsl(self, nap):
         self.player_x, self.player_y = Window.mouse_pos
 
         if self.firing:
             self.fire_delay -= nap
+
+        self.spawn_delay -= nap
 
         PSWidget.update_glsl(self, nap)
 
