@@ -163,7 +163,7 @@ class Trail(Particle):
         if created:
             self.size = 0
         else:
-            self.size = 1.5 * random() + 0.1
+            self.size = random() + 0.6
 
     def advance(self, nap):
         self.size -= nap
@@ -173,21 +173,57 @@ class Trail(Particle):
             self.x -= 120 * nap
 
 
+class Bullet(Particle):
+    active = False
+    tex_name = 'bullet'
+
+    def reset(self, created=False):
+        self.active = False
+        self.x = -100
+        self.y = -100
+
+    def advance(self, nap):
+        if self.active:
+            self.x += 250 * nap
+            if self.x > self.parent.width:
+                self.reset()
+        elif (self.parent.firing and
+              self.parent.fire_delay <= 0):
+            self.active = True
+            self.x = self.parent.player_x + 40
+            self.y = self.parent.player_y
+            self.parent.fire_delay += 0.2
+
+
 class Game(PSWidget):
     glsl = 'game.glsl'
     atlas = 'game.atlas'
+
+    fire_delay = 0
+    firing = False
 
     def initialize(self):
         self.player_x, self.player_y = self.center
 
         self.make_particles(Star, 200)
-        self.make_particles(Trail, 300)
+        self.make_particles(Trail, 200)
         self.make_particles(Player, 1)
+        self.make_particles(Bullet, 25)
 
     def update_glsl(self, nap):
         self.player_x, self.player_y = Window.mouse_pos
 
+        if self.firing:
+            self.fire_delay -= nap
+
         PSWidget.update_glsl(self, nap)
+
+    def on_touch_down(self, touch):
+        self.firing = True
+        self.fire_delay = 0
+
+    def on_touch_up(self, touch):
+        self.firing = False
 
 
 class GameApp(App):
