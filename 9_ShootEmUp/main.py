@@ -7,7 +7,15 @@ from kivy.app import App
 from kivy.base import EventLoop
 from kivy.clock import Clock
 from kivy.config import Config
+
+Config.set('graphics', 'width', '960')
+Config.set('graphics', 'height', '540')
+Config.set('graphics', 'resizable', '0')
+Config.set('graphics', 'show_cursor', '0')
+Config.set('input', 'mouse', 'mouse,disable_multitouch')
+
 from kivy.core.image import Image
+from kivy.core.window import Window
 from kivy.graphics import Mesh
 from kivy.graphics.instructions import RenderContext
 from kivy.uix.widget import Widget
@@ -55,6 +63,9 @@ class Particle:
                 self.x, self.y, self.size)
 
     def reset(self, created=False):
+        raise NotImplementedError()
+
+    def advance(self, nap):
         raise NotImplementedError()
 
 
@@ -132,12 +143,51 @@ class Star(Particle):
             self.reset()
 
 
+class Player(Particle):
+    tex_name = 'player'
+
+    def reset(self, created=False):
+        self.x = self.parent.player_x
+        self.y = self.parent.player_y
+
+    advance = reset
+
+
+class Trail(Particle):
+    tex_name = 'trail'
+
+    def reset(self, created=False):
+        self.x = self.parent.player_x + randint(-30, -20)
+        self.y = self.parent.player_y + randint(-10, 10)
+
+        if created:
+            self.size = 0
+        else:
+            self.size = 1.5 * random() + 0.1
+
+    def advance(self, nap):
+        self.size -= nap
+        if self.size <= 0.1:
+            self.reset()
+        else:
+            self.x -= 120 * nap
+
+
 class Game(PSWidget):
     glsl = 'game.glsl'
     atlas = 'game.atlas'
 
     def initialize(self):
+        self.player_x, self.player_y = self.center
+
         self.make_particles(Star, 200)
+        self.make_particles(Trail, 300)
+        self.make_particles(Player, 1)
+
+    def update_glsl(self, nap):
+        self.player_x, self.player_y = Window.mouse_pos
+
+        PSWidget.update_glsl(self, nap)
 
 
 class GameApp(App):
@@ -150,12 +200,6 @@ class GameApp(App):
         Clock.schedule_interval(self.root.update_glsl, 60 ** -1)
 
 if __name__ == '__main__':
-    Config.set('graphics', 'width', '960')
-    Config.set('graphics', 'height', '540')
-    Config.set('graphics', 'show_cursor', '0')
-    Config.set('input', 'mouse', 'mouse,disable_multitouch')
-
-    from kivy.core.window import Window
     Window.clearcolor = get_color_from_hex('111110')
 
     GameApp().run()
