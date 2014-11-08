@@ -50,21 +50,21 @@ class GlslDemo(Widget):
 
         texture, uvmap = load_atlas('icons.atlas')
 
-        ia = uvmap['icon_clock']
+        a = uvmap['icon_clock']
         vertices = (
-            128, 128, -ia.su, -ia.sv, ia.u0, ia.v1,
-            128, 128,  ia.su, -ia.sv, ia.u1, ia.v1,
-            128, 128,  ia.su,  ia.sv, ia.u1, ia.v0,
-            128, 128, -ia.su,  ia.sv, ia.u0, ia.v0,
+            128, 128, -a.su, -a.sv, a.u0, a.v1,
+            128, 128,  a.su, -a.sv, a.u1, a.v1,
+            128, 128,  a.su,  a.sv, a.u1, a.v0,
+            128, 128, -a.su,  a.sv, a.u0, a.v0,
         )
         indices = (0, 1, 2, 2, 3, 0)
 
-        ib = uvmap['icon_paint']
+        b = uvmap['icon_paint']
         vertices += (
-            256, 256, -ib.su, -ib.sv, ib.u0, ib.v1,
-            256, 256,  ib.su, -ib.sv, ib.u1, ib.v1,
-            256, 256,  ib.su,  ib.sv, ib.u1, ib.v0,
-            256, 256, -ib.su,  ib.sv, ib.u0, ib.v0,
+            256, 256, -b.su, -b.sv, b.u0, b.v1,
+            256, 256,  b.su, -b.sv, b.u1, b.v1,
+            256, 256,  b.su,  b.sv, b.u1, b.v0,
+            256, 256, -b.su,  b.sv, b.u0, b.v0,
         )
         indices += (4, 5, 6, 6, 7, 4)
 

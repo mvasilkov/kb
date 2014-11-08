@@ -230,6 +230,8 @@ class Enemy(Particle):
         if self.active:
             if self.check_hit():
                 snd_hit.play()
+
+                self.reset()
                 return
 
             self.x -= 200 * nap
@@ -253,7 +255,6 @@ class Enemy(Particle):
     def check_hit(self):
         if math.hypot(self.parent.player_x - self.x,
                       self.parent.player_y - self.y) < 60:
-            self.reset()
             return True
 
         for b in self.parent.bullets:
@@ -262,7 +263,6 @@ class Enemy(Particle):
 
             if math.hypot(b.x - self.x, b.y - self.y) < 30:
                 b.reset()
-                self.reset()
                 return True
 
 
@@ -270,8 +270,8 @@ class Game(PSWidget):
     glsl = 'game.glsl'
     atlas = 'game.atlas'
 
-    fire_delay = 0
     firing = False
+    fire_delay = 0
     spawn_delay = 1
 
     def initialize(self):
