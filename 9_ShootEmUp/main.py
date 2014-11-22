@@ -4,6 +4,7 @@ import json
 import math
 from random import randint, random
 
+from kivy import platform
 from kivy.app import App
 from kivy.base import EventLoop
 from kivy.clock import Clock
@@ -274,6 +275,8 @@ class Game(PSWidget):
     fire_delay = 0
     spawn_delay = 1
 
+    use_mouse = platform not in ('ios', 'android')
+
     def initialize(self):
         self.player_x, self.player_y = self.center
 
@@ -286,7 +289,8 @@ class Game(PSWidget):
         self.bullets = self.particles[-25:]
 
     def update_glsl(self, nap):
-        self.player_x, self.player_y = Window.mouse_pos
+        if self.use_mouse:
+            self.player_x, self.player_y = Window.mouse_pos
 
         if self.firing:
             self.fire_delay -= nap
@@ -296,8 +300,12 @@ class Game(PSWidget):
         PSWidget.update_glsl(self, nap)
 
     def on_touch_down(self, touch):
+        self.player_x, self.player_y = touch.pos
         self.firing = True
         self.fire_delay = 0
+
+    def on_touch_move(self, touch):
+        self.player_x, self.player_y = touch.pos
 
     def on_touch_up(self, touch):
         self.firing = False

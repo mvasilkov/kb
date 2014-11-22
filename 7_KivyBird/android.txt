@@ -1,0 +1,3 @@
+title=Kivy Bird
+author=Mark Vasilkov
+orientation=landscape
