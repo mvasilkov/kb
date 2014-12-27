@@ -59,6 +59,7 @@ def all_cells(flip_x=False, flip_y=False):
 
 class Board(Widget):
     b = None
+    moving = False
 
     def __init__(self, **kwargs):
         super(Board, self).__init__(**kwargs)
@@ -77,15 +78,21 @@ class Board(Widget):
             return
 
         x, y = random.choice(empty_cells)
-        tile = Tile(pos=self.cell_pos(x, y), size=self.cell_size)
+        tile = Tile(pos=self.cell_pos(x, y),
+                    size=self.cell_size)
         self.b[x][y] = tile
         self.add_widget(tile)
 
         if len(empty_cells) == 1 and self.is_deadlocked():
             print('Game over (board is deadlocked)')
 
+        self.moving = False
+
     def is_deadlocked(self):
         for x, y in all_cells():
+            if self.b[x][y] is None:
+                return False
+
             number = self.b[x][y].number
             if self.can_combine(x + 1, y, number) or \
                     self.can_combine(x, y + 1, number):
@@ -93,9 +100,11 @@ class Board(Widget):
         return True
 
     def move(self, dir_x, dir_y):
+        if self.moving:
+            return
+
         dir_x = int(dir_x)
         dir_y = int(dir_y)
-        has_on_complete = False
 
         for board_x, board_y in all_cells(dir_x > 0, dir_y > 0):
             tile = self.b[board_x][board_y]
@@ -117,7 +126,7 @@ class Board(Widget):
                 self.b[x][y] = tile
                 tile.number *= 2
                 if (tile.number == 2048):
-                    print('You win the game')  # TODO
+                    print('You win the game')
 
                 tile.update_colors()
 
@@ -126,9 +135,9 @@ class Board(Widget):
 
             anim = Animation(pos=self.cell_pos(x, y),
                              duration=0.25, transition='linear')
-            if not has_on_complete:
+            if not self.moving:
                 anim.on_complete = self.new_tile
-                has_on_complete = True
+                self.moving = True
 
             anim.start(tile)
 
