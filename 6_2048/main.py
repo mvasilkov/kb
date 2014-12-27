@@ -17,8 +17,8 @@ colors = (
     'f67c5f', 'f65e3b', 'edcf72', 'edcc61',
     'edc850', 'edc53f', 'edc22e')
 
-tile_colors = {2 ** (i + 1): colors[i]
-               for i in range(len(colors))}
+tile_colors = {2 ** i: color for i, color in
+               enumerate(colors, start=1)}
 
 key_vectors = {
     Keyboard.keycodes['up']: (0, 1),
@@ -52,8 +52,8 @@ class Tile(Widget):
 
 
 def all_cells(flip_x=False, flip_y=False):
-    for x in (range(3, -1, -1) if flip_x else range(4)):
-        for y in (range(3, -1, -1) if flip_y else range(4)):
+    for x in (reversed(range(4)) if flip_x else range(4)):
+        for y in (reversed(range(4)) if flip_y else range(4)):
             yield (x, y)
 
 
@@ -73,7 +73,7 @@ class Board(Widget):
         empty_cells = [(x, y) for x, y in all_cells()
                        if self.b[x][y] is None]
         if not empty_cells:
-            print('Game over')  # TODO
+            print('Game over (tentative: no cells)')
             return
 
         x, y = random.choice(empty_cells)
@@ -82,11 +82,11 @@ class Board(Widget):
         self.add_widget(tile)
 
         if len(empty_cells) == 1 and self.is_deadlocked():
-            print('Game over')  # TODO
+            print('Game over (board is deadlocked)')
 
     def is_deadlocked(self):
         for x, y in all_cells():
-            number = self.b[x][y]
+            number = self.b[x][y].number
             if self.can_combine(x + 1, y, number) or \
                     self.can_combine(x, y + 1, number):
                 return False
@@ -132,14 +132,16 @@ class Board(Widget):
 
             anim.start(tile)
 
-    def can_move(self, board_x, board_y):
+    def valid_cell(self, board_x, board_y):
         return (board_x >= 0 and board_y >= 0 and
-                board_x <= 3 and board_y <= 3 and
+                board_x <= 3 and board_y <= 3)
+
+    def can_move(self, board_x, board_y):
+        return (self.valid_cell(board_x, board_y) and
                 self.b[board_x][board_y] is None)
 
     def can_combine(self, board_x, board_y, number):
-        return (board_x >= 0 and board_y >= 0 and
-                board_x <= 3 and board_y <= 3 and
+        return (self.valid_cell(board_x, board_y) and
                 self.b[board_x][board_y] is not None and
                 self.b[board_x][board_y].number == number)
 
