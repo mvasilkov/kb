@@ -12,8 +12,7 @@ void main(void)
          0.0, 1.0, 0.0, vCenter.y,
          0.0, 0.0, 1.0, 0.0,
          0.0, 0.0, 0.0, 1.0);
-    vec4 pos = vec4(vPosition.xy * vScale, 0.0, 1.0)
-        * move_mat;
+    vec4 pos = vec4(vPosition.xy * vScale, 0.0, 1.0) * move_mat;
     gl_Position = projection_mat * modelview_mat * pos;
 }
 

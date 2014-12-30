@@ -79,8 +79,7 @@ class Starfield(Widget):
         x0, y0 = self.center
         max_distance = 1.1 * max(x0, y0)
 
-        for i in range(NSTARS):
-            star = self.stars[i]
+        for star in self.stars:
             star.distance *= 2 * nap + 1
             star.size += 0.25 * nap
 

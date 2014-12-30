@@ -83,10 +83,10 @@ class PSWidget(Widget):
         self.canvas.shader.source = self.glsl
 
         self.vfmt = (
-            ('vCenter', 2, 'float'),
-            ('vScale', 1, 'float'),
-            ('vPosition', 2, 'float'),
-            ('vTexCoords0', 2, 'float'),
+            (b'vCenter', 2, 'float'),
+            (b'vScale', 1, 'float'),
+            (b'vPosition', 2, 'float'),
+            (b'vTexCoords0', 2, 'float'),
         )
 
         self.vsize = sum(attr[1] for attr in self.vfmt)
@@ -97,7 +97,7 @@ class PSWidget(Widget):
         count = len(self.particles)
         uv = self.uvmap[Cls.tex_name]
 
-        for i in xrange(count, count + num):
+        for i in range(count, count + num):
             j = 4 * i
             self.indices.extend((
                 j, j + 1, j + 2, j + 2, j + 3, j))

@@ -43,9 +43,9 @@ class GlslDemo(Widget):
         self.canvas.shader.source = 'tex_atlas.glsl'
 
         fmt = (
-            ('vCenter',     2, 'float'),
-            ('vPosition',   2, 'float'),
-            ('vTexCoords0', 2, 'float'),
+            (b'vCenter',     2, 'float'),
+            (b'vPosition',   2, 'float'),
+            (b'vTexCoords0', 2, 'float'),
         )
 
         texture, uvmap = load_atlas('icons.atlas')
