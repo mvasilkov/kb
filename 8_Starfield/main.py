@@ -49,21 +49,21 @@ class Starfield(Widget):
         self.canvas.shader.source = 'starfield.glsl'
 
         self.vfmt = (
-            ('vCenter',     2, 'float'),
-            ('vScale',      1, 'float'),
-            ('vPosition',   2, 'float'),
-            ('vTexCoords0', 2, 'float'),
+            (b'vCenter',     2, 'float'),
+            (b'vScale',      1, 'float'),
+            (b'vPosition',   2, 'float'),
+            (b'vTexCoords0', 2, 'float'),
         )
 
         self.vsize = sum(attr[1] for attr in self.vfmt)
 
         self.indices = []
-        for i in xrange(0, 4 * NSTARS, 4):
+        for i in range(0, 4 * NSTARS, 4):
             self.indices.extend((
                 i, i + 1, i + 2, i + 2, i + 3, i))
 
         self.vertices = []
-        for i in xrange(NSTARS):
+        for i in range(NSTARS):
             self.vertices.extend((
                 0, 0, 1, -24, -24, 0, 1,
                 0, 0, 1,  24, -24, 1, 1,
@@ -73,13 +73,13 @@ class Starfield(Widget):
 
         self.texture = Image('star.png').texture
 
-        self.stars = [Star(self, i) for i in xrange(NSTARS)]
+        self.stars = [Star(self, i) for i in range(NSTARS)]
 
     def update_glsl(self, nap):
         x0, y0 = self.center
         max_distance = 1.1 * max(x0, y0)
 
-        for i in xrange(NSTARS):
+        for i in range(NSTARS):
             star = self.stars[i]
             star.distance *= 2 * nap + 1
             star.size += 0.25 * nap

@@ -118,9 +118,8 @@ class Bird(ImageWidget):
         super(Bird, self).__init__(**kwargs)
 
     def gravity_on(self, height):
-        if 'center_y' in self.pos_hint:
-            del self.pos_hint['center_y']
-
+        # Replace pos_hint with a value
+        self.pos_hint.pop('center_y', None)
         self.center_y = 0.6 * height
 
     def bump(self):

@@ -13,8 +13,8 @@ class GlslDemo(Widget):
         self.canvas.shader.source = 'color.glsl'
 
         fmt = (
-            ('vPosition', 2, 'float'),
-            ('vColor', 3, 'float'),
+            (b'vPosition', 2, 'float'),
+            (b'vColor', 3, 'float'),
         )
 
         indices = (0, 1, 2, 2, 3, 0)

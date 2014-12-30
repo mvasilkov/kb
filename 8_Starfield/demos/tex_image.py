@@ -14,8 +14,8 @@ class GlslDemo(Widget):
         self.canvas.shader.source = 'tex_image.glsl'
 
         fmt = (
-            ('vPosition', 2, 'float'),
-            ('vTexCoords0', 2, 'float'),
+            (b'vPosition', 2, 'float'),
+            (b'vTexCoords0', 2, 'float'),
         )
 
         indices = (0, 1, 2, 2, 3, 0)
