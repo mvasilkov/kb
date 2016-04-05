@@ -50,7 +50,7 @@ class ChatApp(App):
         self.conn.write('%s:%s' % (self.nick, msg))
         self.root.ids.chat_logs.text += (
             '[b][color=2980b9]{}:[/color][/b] {}\n'
-            .format(self.nick, esc_markup(msg)))
+            .format(self.nick.encode('utf8'), esc_markup(msg).encode('utf8')))
         self.root.ids.message.text = ''
 
     def on_connect(self, conn):
