@@ -47,7 +47,7 @@ class ChatApp(App):
 
     def send_msg(self):
         msg = self.root.ids.message.text
-        self.conn.write('%s:%s' % (self.nick, msg))
+        self.conn.write('%s:%s' % (self.nick.encode('utf8'), msg.encode('utf8')))
         self.root.ids.chat_logs.text += (
             '[b][color=2980b9]{}:[/color][/b] {}\n'
             .format(self.nick.encode('utf8'), esc_markup(msg).encode('utf8')))
