@@ -15,7 +15,9 @@ def esc_markup(msg):
 
 class ChatClient(protocol.Protocol):
     def connectionMade(self):
-        self.transport.write('CONNECT')
+        # send 'CONNECT' message and 
+        # force TCP flush by appending a line feed ('\n')
+        self.transport.write('CONNECT\n')
         self.factory.app.on_connect(self.transport)
 
     def dataReceived(self, data):
